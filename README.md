@@ -1,8 +1,22 @@
 # synthetic_radar_GPV
 
 ## env
+### linux
 ubuntu 18.04.1 LTS  
 on VMware Workstation 15 Player  
+### windows
+windows10 x64
+http://www.ftp.cpc.ncep.noaa.gov/wd51we/wgrib2/Windows_64/
+synthetic/
+　├ Ggis1km_image_generator_WINDOWS.py
+　├ temp.bin
+　└ wgrib2/
+　　├ wgrib2.exe
+　　├ cyggcc_s-seh-1.dll
+　　├ cyggfortran-3.dll
+　　├ cyggomp-1.dll
+　　├ cygquadmath-0.dll
+　　└ cygwin1.dll
 
 ## reference
 １kmメッシュ全国合成レーダーGPV  
