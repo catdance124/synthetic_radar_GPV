@@ -5,18 +5,25 @@
 ubuntu 18.04.1 LTS  
 on VMware Workstation 15 Player  
 ### windows
-windows10 x64
-http://www.ftp.cpc.ncep.noaa.gov/wd51we/wgrib2/Windows_64/
-synthetic/
-　├ Ggis1km_image_generator_WINDOWS.py
-　├ temp.bin
-　└ wgrib2/
-　　├ wgrib2.exe
-　　├ cyggcc_s-seh-1.dll
-　　├ cyggfortran-3.dll
-　　├ cyggomp-1.dll
-　　├ cygquadmath-0.dll
-　　└ cygwin1.dll
+仮想環境ではmatplotlibのsavefigがどんどん遅くなっていったので  
+クラスタで回すために対応させた  
+
+windows10 x64  anaconda
+```
+$ conda install basemap
+```
+http://www.ftp.cpc.ncep.noaa.gov/wd51we/wgrib2/Windows_64/  
+ファイル配置  
+synthetic/  
+　├ Ggis1km_image_generator_WINDOWS.py  
+　├ temp.bin  
+　└ wgrib2/  
+　　├ wgrib2.exe  
+　　├ cyggcc_s-seh-1.dll  
+　　├ cyggfortran-3.dll  
+　　├ cyggomp-1.dll  
+　　├ cygquadmath-0.dll  
+　　└ cygwin1.dll  
 
 ## reference
 １kmメッシュ全国合成レーダーGPV  
@@ -146,6 +153,12 @@ path = '~/temp'
 URL = 'http://hoge.tar'
 !wget -nc -P $path $URL
 # !wget -nc -P ~/temp http://hoge.tar と等価
+```
+### .pyでは使えないので
+subprocessを代用
+```python
+import subprocess
+subprocess.run(['./wgrib2/wgrib2.exe',filepath,'-order','we:ns','-no_header','-bin','temp.bin'])
 ```
 ### wget tips
 -nc 同名ファイルは保存しない  
