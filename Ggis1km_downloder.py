@@ -5,9 +5,9 @@ import re
 import configparser
 
 class Downloader:
-    def __init__(self):
-        self.tar_path = './tar'
-        self.bin_path = '/mnt/hgfs/bin'  # マウントしている
+    def __init__(self, tar_path, bin_path):
+        self.tar_path = tar_path
+        self.bin_path = bin_path
         subprocess.run(['mkdir', '-p', self.tar_path])
         subprocess.run(['mkdir', '-p', self.bin_path])
     
@@ -58,20 +58,21 @@ class Downloader:
 if __name__ == '__main__':
     # 設定読み込み
     inifile = configparser.ConfigParser()
-    inifile.read('./config.ini', 'UTF-8')
+    inifile.read('./downloader_config.ini', 'UTF-8')
 
     start = inifile.get('period', 'start')
     end = inifile.get('period', 'end')
     num = inifile.get('interval', 'num')
     timescale = inifile.get('interval', 'timescale')
+    tar_path = inifile.get('path', 'tar_path')
+    bin_path = inifile.get('path', 'bin_path')
 
     dt = datetime.datetime.strptime(start, '%Y/%m/%d %H:%M:%S')
     dt_limit = datetime.datetime.strptime(end, '%Y/%m/%d %H:%M:%S')
     
     # インスタンスを作成しダウンロード開始
-    downloader = Downloader()
+    downloader = Downloader(tar_path, bin_path)
     while dt < dt_limit:
         downloader.set_date(dt)
         downloader.get_bin_file()
         dt = dt + eval('datetime.timedelta(' + timescale + '=' + num + ')')
-
