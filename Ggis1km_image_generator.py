@@ -19,7 +19,7 @@ from mpl_toolkits.basemap import Basemap, cm
 
 # 設定読み込み
 inifile = configparser.ConfigParser()
-inifile.read('./image_generator_config.ini', 'UTF-8')
+inifile.read('./config.ini', 'UTF-8')
 
 
 def convert_rep_to_level(intensity):
@@ -89,7 +89,7 @@ def draw_map(intensity, city, save_file_path=None):
     zero_color = 0 if base_color == 'black' else 1
     
     # 色の変更
-    cm = plt.cm.jet
+    cm = eval('plt.cm.' + inifile.get('image', 'color_map'))
     cm_list = cm(np.arange(cm.N))
     cm_list[0,:3] = zero_color    # カラースケール0番目の値の色を変更
     mycmap = ListedColormap(cm_list)
@@ -147,7 +147,7 @@ def bin2img(filepath, save_path=None):
 
 if __name__ == '__main__':
     bin_path = Path(inifile.get('path', 'bin_path'))
-    save_path = inifile.get('path', 'save_path')
+    save_path = inifile.get('path', 'img_path')
 
     for filepath in sorted(bin_path.glob('**/*.bin')):
         bin2img(str(filepath), save_path)

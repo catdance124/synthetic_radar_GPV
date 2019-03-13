@@ -58,7 +58,7 @@ class Downloader:
 if __name__ == '__main__':
     # 設定読み込み
     inifile = configparser.ConfigParser()
-    inifile.read('./downloader_config.ini', 'UTF-8')
+    inifile.read('config.ini', 'UTF-8')
 
     start = inifile.get('period', 'start')
     end = inifile.get('period', 'end')
