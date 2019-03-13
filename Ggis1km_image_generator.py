@@ -127,15 +127,16 @@ def bin2img(filepath, save_path=None):
     timestamp = re.findall('\d{14}', filepath)[0]
     if save_path is not None:
         os.makedirs(save_path, exist_ok=True)
-        save_file_path = save_path + timestamp + '.png'
+        save_file_path = save_path + '/' + timestamp + '.png'
         if os.path.exists(save_file_path):  # 既に保存したいファイルがあるときスキップ
             return
     
     # wgrib2で.binファイル(GRIB2ファイル)を読み、形式を変えtemp.binファイルに保存
-    subprocess.run(['wgrib2', filepath, '-order', 'we:ns', '-no_header', '-bin', './wgrib2_temp.bin'])
+    subprocess.run(['mkdir', '-p', './temp'])
+    subprocess.run(['wgrib2', filepath, '-order', 'we:ns', '-no_header', '-bin', './temp/wgrib2_temp.bin'])
     
     # 読み込み
-    f = open('./wgrib2_temp.bin', mode='rb')
+    f = open('./temp/wgrib2_temp.bin', mode='rb')
     intensity = np.fromfile(f, dtype='float32',sep='').reshape(3360,2560)  # 格子形状に変形し読み込む
     intensity_level = convert_rep_to_level(intensity)  # データ代表値をレベル値に変換
 
