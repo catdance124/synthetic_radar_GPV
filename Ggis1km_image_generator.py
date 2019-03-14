@@ -147,8 +147,8 @@ def bin2img(filepath, save_path=None):
 
 
 if __name__ == '__main__':
-    bin_path = Path(inifile.get('path', 'bin_path'))
-    save_path = inifile.get('path', 'img_path')
+    bin_path = Path(inifile.get('generate_path', 'bin_path'))
+    save_path = inifile.get('generate_path', 'img_path')
 
     for filepath in sorted(bin_path.glob('**/*.bin')):
         bin2img(str(filepath), save_path)

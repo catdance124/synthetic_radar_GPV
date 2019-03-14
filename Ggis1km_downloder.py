@@ -64,8 +64,8 @@ if __name__ == '__main__':
     end = inifile.get('period', 'end')
     num = inifile.get('interval', 'num')
     timescale = inifile.get('interval', 'timescale')
-    tar_path = inifile.get('path', 'tar_path')
-    bin_path = inifile.get('path', 'bin_path')
+    tar_path = inifile.get('download_path', 'tar_path')
+    bin_path = inifile.get('download_path', 'bin_path')
 
     dt = datetime.datetime.strptime(start, '%Y/%m/%d %H:%M:%S')
     dt_limit = datetime.datetime.strptime(end, '%Y/%m/%d %H:%M:%S')
