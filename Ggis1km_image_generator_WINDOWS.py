@@ -117,7 +117,6 @@ def draw_map(intensity, city, save_file_path=None):
     plt.clf()
 
 def bin2img(filepath, save_path=None):
-    print('koko')
     timestamp = re.findall(r'\d{14}', filepath)[0]
     if save_path is not None:
         os.makedirs(save_path, exist_ok=True)
@@ -126,11 +125,10 @@ def bin2img(filepath, save_path=None):
             return
     
     # wgrib2で.binファイル(GRIB2ファイル)を読み、形式を変えtemp.binファイルに保存
-    subprocess.run(['mkdir', './temp', '>', 'NUL', '2>&1'], shell=True)
-    subprocess.run(['./wgrib2/wgrib2.exe', filepath, '-order', 'we:ns', '-no_header', '-bin', './temp/wgrib2_temp.bin'])
+    subprocess.run([inifile.get('windows', 'wgrib_path'), filepath, '-order', 'we:ns', '-no_header', '-bin', './wgrib2_temp.bin'])
     
     # 読み込み
-    f = open('./temp/wgrib2_temp.bin', mode='rb')
+    f = open('./wgrib2_temp.bin', mode='rb')
     intensity = np.fromfile(f, dtype='float32',sep='').reshape(3360,2560)  # 格子形状に変形し読み込む
     intensity_level = convert_rep_to_level(intensity)  # データ代表値をレベル値に変換
 
@@ -140,10 +138,8 @@ def bin2img(filepath, save_path=None):
 
 
 if __name__ == '__main__':
-    bin_path = Path(inifile.get('path', 'bin_path'))
-    save_path = inifile.get('path', 'img_path')
-    print('ddd')
+    bin_path = Path(inifile.get('generate_path', 'bin_path'))
+    save_path = inifile.get('generate_path', 'img_path')
 
     for filepath in sorted(bin_path.glob('**/*.bin')):
-        print('koko')
         bin2img(str(filepath), save_path)

@@ -132,11 +132,10 @@ def bin2img(filepath, save_path=None):
             return
     
     # wgrib2で.binファイル(GRIB2ファイル)を読み、形式を変えtemp.binファイルに保存
-    subprocess.run(['mkdir', '-p', './temp'])
-    subprocess.run(['wgrib2', filepath, '-order', 'we:ns', '-no_header', '-bin', './temp/wgrib2_temp.bin'])
+    subprocess.run(['wgrib2', filepath, '-order', 'we:ns', '-no_header', '-bin', './wgrib2_temp.bin'])
     
     # 読み込み
-    f = open('./temp/wgrib2_temp.bin', mode='rb')
+    f = open('./wgrib2_temp.bin', mode='rb')
     intensity = np.fromfile(f, dtype='float32',sep='').reshape(3360,2560)  # 格子形状に変形し読み込む
     intensity_level = convert_rep_to_level(intensity)  # データ代表値をレベル値に変換
 
