@@ -97,7 +97,7 @@ def draw_map(intensity, city, save_file_path=None):
     # 描画矩形座標を指定
     m = Basemap(llcrnrlat=lats_city.min(), urcrnrlat=lats_city.max(), \
                 llcrnrlon=lons_city.min(), urcrnrlon=lons_city.max(), \
-                resolution='c')
+                resolution=inifile.get('image', 'coastline_quality'))
     
     # 海岸線
     if inifile.getboolean('image', 'draw_coastline'):
