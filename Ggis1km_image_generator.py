@@ -124,7 +124,7 @@ def draw_map(intensity, city, save_file_path=None):
     plt.clf()
 
 def bin2img(filepath, save_path=None):
-    timestamp = re.findall('\d{14}', filepath)[0]
+    timestamp = re.findall(r'\d{14}', filepath)[0]
     if save_path is not None:
         os.makedirs(save_path, exist_ok=True)
         save_file_path = save_path + '/' + timestamp + '.png'
