@@ -1,15 +1,15 @@
 synthetic_radar_GPV
 ====
-レーダーエコー強度画像を作成するツール
+レーダーエコー強度画像を作成するツール\
+中身について[Qiita](https://qiita.com/kinosi/items/56b664d9a10d35b4a183)の記事があります．
 
 ## Description
 [京都大学生存圏研究所データベース](http://database.rish.kyoto-u.ac.jp/arch/jmadata/synthetic-original.html)から[１kmメッシュ全国合成レーダーエコー強度GPV](http://www.jmbsc.or.jp/jp/online/file/f-online30100.html)を取得し，レーダーエコー強度画像を作成します．\
 京都大学生存圏研究所データベースの気象庁データは**学術目的に限り**無償利用可能です．
 
 ## Demo
-ダウンロードするデータの間隔を選択できます．（最小: 10分間隔）\
-画像の背景色，カラーバーの有無，カラーマップの指定，海岸線の有無，海岸線の質が選択できます．
-
+画像の座標・範囲，画像の背景色，カラーバーの有無，カラーマップの指定，海岸線の有無，海岸線の質が選択できます．\
+以下は`2018/07/03 11:00:00`の`(31.33, 130.34)`を中心にした画像
 | detail | image(2018/07/03 11:00:00) |
 |:-----------|:------------:|
 | 背景: 白<br>カラーバー: 有<br>カラーマップ: jet<br>海岸線: 有<br>海岸線の質: low | <img src="https://user-images.githubusercontent.com/37448236/54401344-a1203b80-470a-11e9-9beb-212fc94ea189.png" width=50%> |
