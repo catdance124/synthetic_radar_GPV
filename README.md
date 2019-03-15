@@ -1,4 +1,167 @@
-# synthetic_radar_GPV
+synthetic_radar_GPV
+====
+レーダーエコー強度画像を作成するツール
+
+## Description
+[京都大学生存圏研究所データベース](http://database.rish.kyoto-u.ac.jp/arch/jmadata/synthetic-original.html)から[１kmメッシュ全国合成レーダーエコー強度GPV](http://www.jmbsc.or.jp/jp/online/file/f-online30100.html)を取得し，レーダーエコー強度画像を作成します．\
+京都大学生存圏研究所データベースの気象庁データは**学術目的に限り**無償利用可能です．
+
+## Demo
+ダウンロードするデータの間隔を選択できます．（最小: 10分間隔）\
+画像の背景色，カラーバーの有無，カラーマップの指定，海岸線の有無，海岸線の質が選択できます．
+
+| detail | image(2018/07/03 11:00:00) |
+|:-----------|:------------:|
+| 背景: 白，カラーバー: 有，カラーマップ: jet，海岸線: 有，海岸線の質: low | <img src="https://user-images.githubusercontent.com/37448236/54401344-a1203b80-470a-11e9-9beb-212fc94ea189.png" width=50%> |
+| 背景: 白，カラーバー: 無，カラーマップ: jet，海岸線: 有，海岸線の質: crude | <img src="https://user-images.githubusercontent.com/37448236/54401342-9ebde180-470a-11e9-950d-99f8aa427660.png" width=50%> |
+| 背景: 黒，カラーバー: 有，カラーマップ: jet，海岸線: 有，海岸線の質: low | <img src="https://user-images.githubusercontent.com/37448236/54401335-98c80080-470a-11e9-8d5a-83b385097a52.png" width=50%> |
+| 背景: 黒，カラーバー: 有，カラーマップ: gray，海岸線: 無 | <img src="https://user-images.githubusercontent.com/37448236/54401339-9c5b8780-470a-11e9-905f-dcb5a6ac2f0d.png" width=50%> |
+| 背景: 白，カラーバー: 無，カラーマップ: jet，海岸線: 無 | <img src="https://user-images.githubusercontent.com/37448236/54401348-a3829580-470a-11e9-8e9b-94bffa2f83d4.png" width=50%> |
+
+## Requirement
+matplotlib, numpy, Basemap,
+[wgrib2](https://www.cpc.ncep.noaa.gov/products/wesley/wgrib2/)
+
+## Usage
+### `config.ini`に設定記入
+```python
+[period]
+# format
+#    start = YYYY/mm/dd HH:MM:SS
+#    end   = YYYY/mm/dd HH:MM:SS
+start = 2018/07/01 00:00:00
+end   = 2018/07/05 00:00:00
+
+[interval]
+# format
+#    num ... number of time interval
+#    timescale: {'minutes', 'hours', 'days', 'weeks'}
+# e.g. num=2, timescale=hours -> download at 2 hours inteval
+# CAUTION: minimum interval is 10 minutes!
+num = 10
+timescale = minutes
+
+[download_path]
+# format
+#    tar_path ... temporary save location for downloaded tar file
+#    bin_path ... save location for bin file
+tar_path = ./tar
+bin_path = /mnt/hgfs/kagoshima/bin_test
+
+[generate_path]
+# format
+#    bin_path ... location of saved bin file (default: same as download_path.bin_path)
+#    img_path ... save location for generated image
+bin_path = ../weather/data/kagoshima/bin_test
+img_path = ../weather/data/kagoshima/bin_test/img_kagoshima
+
+
+[center_location]
+# format
+#    latitude  ... latitude of image's center location
+#    longitude ... longitude of image's center location
+latitude  = 31.33
+longitude = 130.34
+
+[area]
+# format
+#    d ... distance from image center(lat,lon) to edge
+d = 2
+
+[image]
+# format
+#    base_color: {'black', 'white'} ... image's backgroud color
+#    color_map: e.g.{'jet', 'gray'}(Colormaps in Matplotlib) ... image's cloud color
+#    draw_coastline: bool ... whether to draw coastline
+#    coastline_quality: {c(crude), l(low), i(intermediate), h(high), f(full)}
+#                      ... coastline quality (only when draw_coastline is True)
+#    draw_colorbar: bool ... whether to draw colorbar
+base_color = white
+color_map = jet
+draw_coastline = True
+coastline_quality = l
+draw_colorbar = True
+
+[windows]
+# for windows wgrib2 path setting
+wgrib_path = C:/Users/Milano/Desktop/wgrib2/wgrib2.exe
+```
+
+- period -> ダウンロードする期間に関するセクション
+    - start -> 期間の始まり
+    - end -> 期間の終わり
+- interval -> ダウンロードする間隔に関するセクション
+    - num -> 時間の数字部分
+    - timescale -> 時間スケールを指定（下記が使えます）[timedelta](https://docs.python.org/ja/3/library/datetime.html#datetime.timedelta)の引数に準拠
+        - minutes
+        - hours
+        - days
+        - weeks
+    
+        num = 20, timescale = daysとすると，20日間隔でデータを取得する．\
+        **データ自体が10分間隔で取得されているので，それより細かい時間指定は不可能**
+- download_path -> ファイルパスに関するセクション
+    - tar_path -> 取得した.tarファイルの保存先（逐次削除するので一時的にしかファイルはありません）
+    - bin_path -> 取り出した.binファイルの保存先
+- generate_path -> ファイルパスに関するセクション
+    - bin_path -> .binファイルが保存されているディレクトリ（基本的には[download_pathセクションのbin_path](https://qiita.com/kinosi/items/56b664d9a10d35b4a183#%E3%82%B3%E3%83%B3%E3%83%95%E3%82%A3%E3%82%B0%E8%AA%AC%E6%98%8E)と同じです）
+    - img_path -> 作成した画像ファイルの保存先
+- center_location -> 画像の中心座標に関するセクション
+    - latitude -> 中心の緯度
+    - longitude -> 中心の経度
+- area-> 画像がカバーする範囲に関するセクション
+    - d-> 中心から東西南北に±dを画像の範囲とする
+- image-> 画像の見た目に関するセクション
+    - base_color-> 画像全体の背景の色（下記が使えます）
+        - black
+        - white
+    - color_map-> 降水強度を描画するカラーマップ（下記で動作確認しました）[matplotlib.cm](https://matplotlib.org/examples/color/colormaps_reference.html)に準拠します
+        - jet
+        - gray
+    - draw_coastline-> 海岸線を描画するかどうか
+    - coastline_quality-> 海岸線の描画精度（draw_coastline = Trueのときのみ動作）（下記が使えます）
+        - c
+        - l
+        - i
+        - h
+        - f
+    - draw_colorbar-> カラーバーを描画するかどうか
+### スクリプト起動
+上記`config.ini`設定後，スクリプト起動
+```bash
+$ python Ggis1km_downloder.py
+```
+```bash
+$ python Ggis1km_image_generator.py
+```
+`download_path.bin_path`に１kmメッシュ全国合成レーダーエコー強度GPVバイナリファイル(GRIB2形式)が，\
+`generate_path.img_path`に作成した画像ファイルが保存される．
+
+## Install
+```bash
+$ git clone https://github.com/catdance124/synthetic_radar_GPV.git
+```
+### wgrib2 install
+```bash
+$ cd ~
+$ sudo apt-get install gfortran
+$ export FC=gfortran
+$ export CC=gcc
+$ wget ftp://ftp.cpc.ncep.noaa.gov/wd51we/wgrib2/wgrib2.tgz
+$ tar -xvzf wgrib2.tgz
+$ cd grib2/
+$ make
+$ sudo cp ~/grib2/wgrib2/wgrib2 /usr/local/bin/
+```
+### Basemap install
+```bash
+$ conda install basemap
+```
+
+
+___
+___
+# 以下開発時メモ
 
 ## env
 ### linux
@@ -84,11 +247,9 @@ $ pyenv global anaconda3-5.3.1
 $ echo 'export PATH="$PYENV_ROOT/versions/anaconda3-5.3.1/bin:$PATH"' >> ~/.bashrc
 $ source ~/.bashrc
 ```
-## pygrib
-pygribにはpyprojかbasemapが必要
+## Basemap
 ```
 $ conda install basemap
-$ conda install -c conda-forge/label/gcc7 pygrib
 ```
 ### import BasemapのError回避
 PROJ_LIBが見つからないので指定して与える
