@@ -125,7 +125,7 @@ def bin2img(filepath, save_path=None):
             return
     
     # wgrib2で.binファイル(GRIB2ファイル)を読み、形式を変えtemp.binファイルに保存
-    subprocess.run([inifile.get('windows', 'wgrib_path'), filepath, '-order', 'we:ns', '-no_header', '-bin', './wgrib2_temp.bin'])
+    subprocess.run([inifile.get('windows', 'wgrib2_path'), filepath, '-order', 'we:ns', '-no_header', '-bin', './wgrib2_temp.bin'])
     
     # 読み込み
     f = open('./wgrib2_temp.bin', mode='rb')

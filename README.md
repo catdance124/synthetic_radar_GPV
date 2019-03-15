@@ -12,11 +12,11 @@ synthetic_radar_GPV
 
 | detail | image(2018/07/03 11:00:00) |
 |:-----------|:------------:|
-| 背景: 白，カラーバー: 有，カラーマップ: jet，海岸線: 有，海岸線の質: low | <img src="https://user-images.githubusercontent.com/37448236/54401344-a1203b80-470a-11e9-9beb-212fc94ea189.png" width=50%> |
-| 背景: 白，カラーバー: 無，カラーマップ: jet，海岸線: 有，海岸線の質: crude | <img src="https://user-images.githubusercontent.com/37448236/54401342-9ebde180-470a-11e9-950d-99f8aa427660.png" width=50%> |
-| 背景: 黒，カラーバー: 有，カラーマップ: jet，海岸線: 有，海岸線の質: low | <img src="https://user-images.githubusercontent.com/37448236/54401335-98c80080-470a-11e9-8d5a-83b385097a52.png" width=50%> |
-| 背景: 黒，カラーバー: 有，カラーマップ: gray，海岸線: 無 | <img src="https://user-images.githubusercontent.com/37448236/54401339-9c5b8780-470a-11e9-905f-dcb5a6ac2f0d.png" width=50%> |
-| 背景: 白，カラーバー: 無，カラーマップ: jet，海岸線: 無 | <img src="https://user-images.githubusercontent.com/37448236/54401348-a3829580-470a-11e9-8e9b-94bffa2f83d4.png" width=50%> |
+| 背景: 白<br>カラーバー: 有<br>カラーマップ: jet<br>海岸線: 有<br>海岸線の質: low | <img src="https://user-images.githubusercontent.com/37448236/54401344-a1203b80-470a-11e9-9beb-212fc94ea189.png" width=50%> |
+| 背景: 白<br>カラーバー: 無<br>カラーマップ: jet<br>海岸線: 有<br>海岸線の質: crude | <img src="https://user-images.githubusercontent.com/37448236/54401342-9ebde180-470a-11e9-950d-99f8aa427660.png" width=50%> |
+| 背景: 黒<br>カラーバー: 有<br>カラーマップ: jet<br>海岸線: 有<br>海岸線の質: low | <img src="https://user-images.githubusercontent.com/37448236/54401335-98c80080-470a-11e9-8d5a-83b385097a52.png" width=50%> |
+| 背景: 黒<br>カラーバー: 有<br>カラーマップ: gray<br>海岸線: 無 | <img src="https://user-images.githubusercontent.com/37448236/54401339-9c5b8780-470a-11e9-905f-dcb5a6ac2f0d.png" width=50%> |
+| 背景: 白<br>カラーバー: 無<br>カラーマップ: jet<br>海岸線: 無 | <img src="https://user-images.githubusercontent.com/37448236/54401348-a3829580-470a-11e9-8e9b-94bffa2f83d4.png" width=50%> |
 
 ## Requirement
 matplotlib, numpy, Basemap,
@@ -31,7 +31,11 @@ matplotlib, numpy, Basemap,
 #    end   = YYYY/mm/dd HH:MM:SS
 start = 2018/07/01 00:00:00
 end   = 2018/07/05 00:00:00
-
+```
+- period -> ダウンロードする期間に関するセクション
+    - start -> 期間の始まり
+    - end -> 期間の終わり
+```python
 [interval]
 # format
 #    num ... number of time interval
@@ -40,34 +44,59 @@ end   = 2018/07/05 00:00:00
 # CAUTION: minimum interval is 10 minutes!
 num = 10
 timescale = minutes
-
+```
+- interval -> ダウンロードする間隔に関するセクション
+    - num -> 時間の数字部分
+    - timescale -> 時間スケールを指定（下記が使えます）[timedelta](https://docs.python.org/ja/3/library/datetime.html#datetime.timedelta)の引数に準拠
+        - minutes
+        - hours
+        - days
+        - weeks
+    
+        num = 20, timescale = daysとすると，20日間隔でデータを取得する．\
+        **データ自体が10分間隔で取得されているので，それより細かい時間指定は不可能**
+```python
 [download_path]
 # format
 #    tar_path ... temporary save location for downloaded tar file
 #    bin_path ... save location for bin file
 tar_path = ./tar
 bin_path = /mnt/hgfs/kagoshima/bin_test
-
+```
+- download_path -> ファイルパスに関するセクション
+    - tar_path -> 取得した.tarファイルの保存先（逐次削除するので一時的にしかファイルはありません）
+    - bin_path -> 取り出した.binファイルの保存先
+```python
 [generate_path]
 # format
 #    bin_path ... location of saved bin file (default: same as download_path.bin_path)
 #    img_path ... save location for generated image
 bin_path = ../weather/data/kagoshima/bin_test
 img_path = ../weather/data/kagoshima/bin_test/img_kagoshima
-
-
+```
+- generate_path -> ファイルパスに関するセクション
+    - bin_path -> .binファイルが保存されているディレクトリ（基本的には[download_pathセクションのbin_path](https://qiita.com/kinosi/items/56b664d9a10d35b4a183#%E3%82%B3%E3%83%B3%E3%83%95%E3%82%A3%E3%82%B0%E8%AA%AC%E6%98%8E)と同じです）
+    - img_path -> 作成した画像ファイルの保存先
+```python
 [center_location]
 # format
 #    latitude  ... latitude of image's center location
 #    longitude ... longitude of image's center location
 latitude  = 31.33
 longitude = 130.34
-
+```
+- center_location -> 画像の中心座標に関するセクション
+    - latitude -> 中心の緯度
+    - longitude -> 中心の経度
+```python
 [area]
 # format
 #    d ... distance from image center(lat,lon) to edge
 d = 2
-
+```
+- area-> 画像がカバーする範囲に関するセクション
+    - d-> 中心から東西南北に±dを画像の範囲とする
+```python
 [image]
 # format
 #    base_color: {'black', 'white'} ... image's backgroud color
@@ -81,36 +110,7 @@ color_map = jet
 draw_coastline = True
 coastline_quality = l
 draw_colorbar = True
-
-[windows]
-# for windows wgrib2 path setting
-wgrib_path = C:/Users/Milano/Desktop/wgrib2/wgrib2.exe
 ```
-
-- period -> ダウンロードする期間に関するセクション
-    - start -> 期間の始まり
-    - end -> 期間の終わり
-- interval -> ダウンロードする間隔に関するセクション
-    - num -> 時間の数字部分
-    - timescale -> 時間スケールを指定（下記が使えます）[timedelta](https://docs.python.org/ja/3/library/datetime.html#datetime.timedelta)の引数に準拠
-        - minutes
-        - hours
-        - days
-        - weeks
-    
-        num = 20, timescale = daysとすると，20日間隔でデータを取得する．\
-        **データ自体が10分間隔で取得されているので，それより細かい時間指定は不可能**
-- download_path -> ファイルパスに関するセクション
-    - tar_path -> 取得した.tarファイルの保存先（逐次削除するので一時的にしかファイルはありません）
-    - bin_path -> 取り出した.binファイルの保存先
-- generate_path -> ファイルパスに関するセクション
-    - bin_path -> .binファイルが保存されているディレクトリ（基本的には[download_pathセクションのbin_path](https://qiita.com/kinosi/items/56b664d9a10d35b4a183#%E3%82%B3%E3%83%B3%E3%83%95%E3%82%A3%E3%82%B0%E8%AA%AC%E6%98%8E)と同じです）
-    - img_path -> 作成した画像ファイルの保存先
-- center_location -> 画像の中心座標に関するセクション
-    - latitude -> 中心の緯度
-    - longitude -> 中心の経度
-- area-> 画像がカバーする範囲に関するセクション
-    - d-> 中心から東西南北に±dを画像の範囲とする
 - image-> 画像の見た目に関するセクション
     - base_color-> 画像全体の背景の色（下記が使えます）
         - black
@@ -126,6 +126,12 @@ wgrib_path = C:/Users/Milano/Desktop/wgrib2/wgrib2.exe
         - h
         - f
     - draw_colorbar-> カラーバーを描画するかどうか
+```python
+[windows]
+# for windows wgrib2 path setting
+wgrib2_path = C:/Users/Milano/Desktop/wgrib2/wgrib2.exe
+```
+- windowsで`Ggis1km_image_generator_WINDOWS.py`を起動する際にwgrib2のパスを設定する必要がある
 ### スクリプト起動
 上記`config.ini`設定後，スクリプト起動
 ```bash
